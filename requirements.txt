@@ -1,0 +1,8 @@
+requests
+pydantic~=2.3.0
+tiktoken~=0.5.1
+bilibili-api-python
+openai
+langchain
+pytest
+python-dotenv

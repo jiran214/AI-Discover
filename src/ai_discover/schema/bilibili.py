@@ -1,24 +1,8 @@
 import abc
 from typing import List, Any
 
+from langchain.schema import Document
 from pydantic import BaseModel
-
-
-class VideoDocument(BaseModel):
-    timestamp: int
-    content: str
-
-
-class VideoOutline(BaseModel):
-    title: str
-    part_outline: List[VideoDocument]
-    timestamp: int
-
-
-class VideoSummary(BaseModel):
-    result_type: int
-    summary: str
-    outline: List[VideoOutline]
 
 
 class BiliNoteStat(BaseModel):

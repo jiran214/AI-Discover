@@ -1,13 +1,13 @@
 from typing import List
 
 import pytest
-from bilibili_api import search, video_zone, sync, Credential
+from bilibili_api import search
 from bilibili_api.video import Video
-from requests import Session
 
-from ai_discover.spider import base
+from spider import base
+from schema.base import Summary, Outline, Fragment
 from schema.bilibili import BiliNoteView
-from schema.note import VideoSummary, BilibiliNote
+from schema.note import BilibiliNote
 from utils import get_credential
 
 
@@ -46,15 +46,34 @@ class VideoSpider(base.NoteSpider):
         info = await video.get_info()
         return BiliNoteView(**info)
 
-    async def get_note_summary(self, video: Video) -> VideoSummary:
+    async def get_note_summary(self, video: Video) -> Summary:
         """获取AI总结"""
         page_index = 0
         json_data = await video.get_ai_conclusion(page_index=page_index)
         assert json_data['code'] == 0, '没有权限'
-        summary_info = VideoSummary(**json_data['model_result'])
+        model_result = json_data['model_result']
+        aid = video.get_aid()
+        summary_info = Summary(
+            content=model_result['summary'],
+            metadata={'aid': aid},
+            outlines=[
+                Outline(
+                    fragments=[
+                        Fragment(
+                            content=part_outline['content'],
+                            metadata={'timestamp': part_outline['timestamp'], 'aid': aid}
+                        )
+                        for part_outline in outline['part_outline']
+                    ],
+                    content=outline['title'],
+                    metadata={'timestamp': outline['timestamp'], 'aid': aid}
+                )
+                for outline in model_result['outline']
+            ]
+        )
         return summary_info
 
-    async def get_notes(self, query, top_n=20):
+    async def get_notes(self, query, top_n=20) -> List[BilibiliNote]:
         video_list = await self.get_note_search_list(query, top_n)
         notes = []
         for video in video_list:

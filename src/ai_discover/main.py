@@ -25,3 +25,19 @@
     - PDF
     - MD
 """
+import index
+from spider import bilibili
+
+query = '仲尼'
+top_n = 20
+
+
+def crawl_notes(query, top_n):
+    notes = bilibili.VideoSpider().get_notes(query, top_n)
+    return notes
+
+
+def create_index(notes):
+    for note in notes:
+        docs = index.split_text(note.summary.get_docs())
+        index.vts.add_documents(docs)

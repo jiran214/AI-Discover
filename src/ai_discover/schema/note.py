@@ -3,17 +3,17 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from schema.bilibili import BiliNoteView, VideoSummary
+from schema.base import Summary
+from schema.bilibili import BiliNoteView
 
 
 class Note(BaseModel, abc.ABC):
     view: Any
-    summary: Any
+    summary: Summary
 
 
 class BilibiliNote(Note):
     view: BiliNoteView
-    summary: VideoSummary
 
 
 class PostNote(Note):

@@ -28,6 +28,7 @@ class Fragment(Document):
 
 class Outline(Document):
     fragments: List[Fragment]
+    index: int
     type: ClassVar = TextType.outline.value
 
 

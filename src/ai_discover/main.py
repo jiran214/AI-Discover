@@ -5,7 +5,7 @@
 4. 索引: 用top n个note建立
     - 第一层:summary
     - 第二层:outline
-    - 第三层:document
+    - 第三层:fragment
 5. 加工: note作为输入，上下文长度和数量取决于具体情况
     - 分类
         - 不同条件分类
@@ -26,7 +26,9 @@
     - MD
 """
 import index
+import store
 from spider import bilibili
+from store import db
 
 query = '仲尼'
 top_n = 20
@@ -35,6 +37,16 @@ top_n = 20
 def crawl_notes(query, top_n):
     notes = bilibili.VideoSpider().get_notes(query, top_n)
     return notes
+
+
+def save_store(query_id, notes):
+    rows = []
+    note_map = {}
+    for note in notes:
+        note_map[note.namespace] = note
+        rows.append(dict(query_id=query_id, namespace=note.namespace, **note.model_dump()))
+    store.bilibili_note_store.insert_many(rows=rows)
+    return note_map
 
 
 def create_index(notes):

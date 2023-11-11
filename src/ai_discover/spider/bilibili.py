@@ -55,20 +55,22 @@ class VideoSpider(base.NoteSpider):
         aid = video.get_aid()
         summary_info = Summary(
             content=model_result['summary'],
-            metadata={'aid': aid},
+            metadata={'namespace': aid},
             outlines=[
                 Outline(
                     fragments=[
                         Fragment(
                             content=part_outline['content'],
-                            metadata={'timestamp': part_outline['timestamp'], 'aid': aid}
+                            metadata={
+                                'timestamp': part_outline['timestamp'], 'namespace': aid
+                            }
                         )
-                        for part_outline in outline['part_outline']
+                        for n, part_outline in enumerate(outline['part_outline'])
                     ],
                     content=outline['title'],
-                    metadata={'timestamp': outline['timestamp'], 'aid': aid}
+                    metadata={'timestamp': outline['timestamp'], 'namespace': aid, 'index': n}
                 )
-                for outline in model_result['outline']
+                for n, outline in enumerate(model_result['outline'])
             ]
         )
         return summary_info

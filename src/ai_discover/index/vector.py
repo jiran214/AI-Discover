@@ -3,7 +3,7 @@ from typing import List, Union
 
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Qdrant
+from langchain.vectorstores.qdrant import Qdrant
 from qdrant_client import QdrantClient
 from qdrant_client.grpc import VectorParams
 from qdrant_client.http.models import Distance

@@ -6,3 +6,4 @@ openai
 langchain
 pytest
 python-dotenv
+dataset
